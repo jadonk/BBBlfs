@@ -26,6 +26,19 @@ usage(){
 	exit 1
 }
 
+reset_bbb_usb () {
+	echo "Attempting to reset Downstream BBB"
+	devmem2 0x47401c60 b 0x00
+	sleep 1
+	echo "usb1" > /sys/bus/usb/drivers/usb/unbind
+	sleep 20
+
+	echo "usb1" > /sys/bus/usb/drivers/usb/bind
+	sleep 1
+	devmem2 0x47401c60 b 0x01
+	sleep 2
+}
+
 echo
 input=$1
 
@@ -75,22 +88,13 @@ if [ ! -f /usr/bin/devmem2 ] ; then
 	dpkg -i /tmp/devmem2_0.0-0ubuntu1_armhf.deb
 fi
 
-echo "Reseting Downstream BBB"
-devmem2 0x47401c60 b 0x00
-sleep 1
-echo "usb1" > /sys/bus/usb/drivers/usb/unbind
-sleep 20
-
 #read -p "When the BeagleBone Black is connected in USB Boot mode press [yY]." -n 1 -r
 #echo
 #if [[ $REPLY =~ ^[Yy]$ ]]
 #then
 	before=($(ls /dev | grep "sd[a-z]$"))
 
-echo "usb1" > /sys/bus/usb/drivers/usb/bind
-sleep 1
-devmem2 0x47401c60 b 0x01
-sleep 2
+	reset_bbb_usb
 
 	if ( ! is_file_exists usb_flasher)
 	then
@@ -163,16 +167,7 @@ sleep 2
 			fi
 
 sync
-
-echo "Attempting to reset Downstream BBB"
-devmem2 0x47401c60 b 0x00
-sleep 1
-echo "usb1" > /sys/bus/usb/drivers/usb/unbind
-sleep 20
-
-echo "usb1" > /sys/bus/usb/drivers/usb/bind
-sleep 1
-devmem2 0x47401c60 b 0x01
+reset_bbb_usb
 
 #			echo
 #			echo "Resizing partitons now, just as a saefty measure if you flash 2GB image on 4GB board!"

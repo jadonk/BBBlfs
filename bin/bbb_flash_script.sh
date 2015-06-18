@@ -142,7 +142,7 @@ sleep 2
 
 #	if [[ $REPLY =~ ^[Yy]$ ]];
 		parts=($(ls /dev | grep "$bbb[1,2]"))
-		then
+#		then
 			for index in ${!parts[*]}
 			do
 				sudo umount /dev/${parts[$index]}

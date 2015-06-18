@@ -75,6 +75,7 @@ if [ ! -f /usr/bin/devmem2 ] ; then
 	dpkg -i /tmp/devmem2_0.0-0ubuntu1_armhf.deb
 fi
 
+echo "Reseting Downstream BBB"
 devmem2 0x47401c60 b 0x00
 sleep 1
 echo "usb1" > /sys/bus/usb/drivers/usb/unbind
@@ -157,6 +158,7 @@ sleep 2
 
 sync
 
+echo "Attempting to reset Downstream BBB"
 devmem2 0x47401c60 b 0x00
 sleep 1
 echo "usb1" > /sys/bus/usb/drivers/usb/unbind
@@ -176,4 +178,4 @@ devmem2 0x47401c60 b 0x01
 #        echo "Please remove power from your board and plug it again."\
 #				"You will boot in the new OS!"
 #	fi
-fi
+#fi
